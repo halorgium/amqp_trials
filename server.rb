@@ -13,8 +13,8 @@ EM.run do
   EM.next_tick do
     amq = MQ.new
     amq.queue("one").subscribe do |msg|
-      puts "Got msg for #{$$}"
       data = Marshal.load(msg)
+      puts "Got data: "
       pp data
     end
   end

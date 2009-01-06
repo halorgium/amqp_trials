@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'amqp'
 require 'mq'
+require 'pp'
 
 EM.run do
   AMQP.start(:user  => 'nanite',
@@ -13,6 +14,8 @@ EM.run do
     amq = MQ.new
     10.times do |i|
       data = ["hello #{i}", Time.now.to_f]
+      puts "Sending data: "
+      pp data
       amq.queue("one").publish(Marshal.dump(data))
     end
   end

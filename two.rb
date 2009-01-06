@@ -9,6 +9,13 @@ EM.run do
              :host  => '127.0.0.1',
              :port  => AMQP::PORT)
 
-  amq = MQ.new
-  amq.queue("one").publish("hello")
+  EM.next_tick do
+    amq = MQ.new
+    10.times do |i|
+      data = ["hello #{i}", Time.now.to_f]
+      amq.queue("one").publish(Marshal.dump(data))
+    end
+  end
+
+  puts "Waiting @ #{Time.now.to_f}"
 end

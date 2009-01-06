@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'amqp'
 require 'mq'
+require 'pp'
 
 EM.run do
   AMQP.start(:user  => 'nanite',
@@ -9,9 +10,14 @@ EM.run do
              :host  => '127.0.0.1',
              :port  => AMQP::PORT)
 
-  amq = MQ.new
-  amq.queue("one", :exclusive => true).subscribe do |msg|
-    puts "Got a message"
-    puts msg
+  EM.next_tick do
+    amq = MQ.new
+    amq.queue("one").subscribe do |msg|
+      puts "Got msg for #{$$}"
+      data = Marshal.load(msg)
+      pp data
+    end
   end
+
+  puts "Waiting @ #{Time.now.to_f}"
 end
